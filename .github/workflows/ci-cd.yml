@@ -18,6 +18,18 @@ jobs:
         with:
           node-version: '14'
 
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v1
+
+      - name: Authenticate with GCP
+        uses: google-github-actions/auth@v0
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Configure docker to use the gcloud command-line tool as a credential helper
+        run: |
+          gcloud auth configure-docker
+
       - name: Build backend Docker image
         run: |
           cd backend
@@ -28,11 +40,6 @@ jobs:
           cd frontend
           docker build -t gcr.io/seventh-site-429808-k1/frontend:latest .
 
-      - name: Authenticate with GCP
-        uses: google-github-actions/auth@v0
-        with:
-          credentials_json: ${{ secrets.GCP_SA_KEY }}
-
       - name: Push Docker images to GCR
         run: |
           docker push gcr.io/seventh-site-429808-k1/backend:latest
@@ -40,6 +47,4 @@ jobs:
 
       - name: Deploy to Cloud Run
         run: |
-          gcloud run deploy backend --image gcr.io/seventh-site-429808-k1/backend:latest --platform managed --region us-central1
-          gcloud run deploy frontend --image gcr.io/seventh-site-429808-k1/frontend:latest --platform managed --region us-central1
-
+          gcloud run deploy backend --image gcr.io/seventh-site-429808-k1/backend:latest --platform managed --region us
