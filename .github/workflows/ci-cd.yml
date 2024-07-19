@@ -28,24 +28,24 @@ jobs:
 
       - name: Configure docker to use the gcloud command-line tool as a credential helper
         run: |
-          gcloud auth configure-docker
+          gcloud auth configure-docker us-central1-docker.pkg.dev
 
       - name: Build backend Docker image
         run: |
           cd backend
-          docker build -t gcr.io/seventh-site-429808-k1/backend:latest .
+          docker build -t us-central1-docker.pkg.dev/seventh-site-429808-k1/my-repo/backend:latest .
 
       - name: Build frontend Docker image
         run: |
           cd frontend
-          docker build -t gcr.io/seventh-site-429808-k1/frontend:latest .
+          docker build -t us-central1-docker.pkg.dev/seventh-site-429808-k1/my-repo/frontend:latest .
 
-      - name: Push Docker images to GCR
+      - name: Push Docker images to Artifact Registry
         run: |
-          docker push gcr.io/seventh-site-429808-k1/backend:latest
-          docker push gcr.io/seventh-site-429808-k1/frontend:latest
+          docker push us-central1-docker.pkg.dev/seventh-site-429808-k1/my-repo/backend:latest
+          docker push us-central1-docker.pkg.dev/seventh-site-429808-k1/my-repo/frontend:latest
 
       - name: Deploy to Cloud Run
         run: |
-          gcloud run deploy backend --image gcr.io/seventh-site-429808-k1/backend:latest --platform managed --region us-central1
-          gcloud run deploy frontend --image gcr.io/seventh-site-429808-k1/frontend:latest --platform managed --region us-central1
+          gcloud run deploy backend --image us-central1-docker.pkg.dev/seventh-site-429808-k1/my-repo/backend:latest --platform managed --region us-central1
+          gcloud run deploy frontend --image us-central1-docker.pkg.dev/seventh-site-429808-k1/my-repo/frontend:latest --platform managed --region us-central1
