@@ -1,8 +1,5 @@
-cd ../frontend
-cat <<EOF > cloudbuild.yaml
 steps:
   - name: 'gcr.io/cloud-builders/docker'
     args: ['build', '-t', 'gcr.io/seventh-site-429808-k1/frontend:latest', '.']
 images:
   - 'gcr.io/seventh-site-429808-k1/frontend:latest'
-EOF
