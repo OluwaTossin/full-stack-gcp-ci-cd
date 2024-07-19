@@ -1,0 +1,45 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Build backend Docker image
+        run: |
+          cd backend
+          docker build -t gcr.io/seventh-site-429808-k1/backend:latest .
+
+      - name: Build frontend Docker image
+        run: |
+          cd frontend
+          docker build -t gcr.io/seventh-site-429808-k1/frontend:latest .
+
+      - name: Authenticate with GCP
+        uses: google-github-actions/auth@v0
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Push Docker images to GCR
+        run: |
+          docker push gcr.io/seventh-site-429808-k1/backend:latest
+          docker push gcr.io/seventh-site-429808-k1/frontend:latest
+
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy backend --image gcr.io/seventh-site-429808-k1/backend:latest --platform managed --region us-central1
+          gcloud run deploy frontend --image gcr.io/seventh-site-429808-k1/frontend:latest --platform managed --region us-central1
+
