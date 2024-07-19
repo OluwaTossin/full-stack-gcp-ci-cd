@@ -1,0 +1,8 @@
+cd backend
+cat <<EOF > cloudbuild.yaml
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/seventh-site-429808-k1/backend:latest', '.']
+images:
+  - 'gcr.io/seventh-site-429808-k1/backend:latest'
+EOF
