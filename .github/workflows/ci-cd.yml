@@ -47,4 +47,5 @@ jobs:
 
       - name: Deploy to Cloud Run
         run: |
-          gcloud run deploy backend --image gcr.io/seventh-site-429808-k1/backend:latest --platform managed --region us
+          gcloud run deploy backend --image gcr.io/seventh-site-429808-k1/backend:latest --platform managed --region us-central1
+          gcloud run deploy frontend --image gcr.io/seventh-site-429808-k1/frontend:latest --platform managed --region us-central1
